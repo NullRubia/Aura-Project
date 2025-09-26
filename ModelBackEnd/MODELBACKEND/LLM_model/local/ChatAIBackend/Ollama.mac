@@ -1,0 +1,90 @@
+1-1) 설치 & 모델 받기
+
+# Ollama 설치 (Mac)
+brew install ollama
+ollama serve
+
+# 한국어 기본: Qwen2 7B Instruct
+ollama pull qwen2:7b-instruct
+
+# 보조: Llama 3.1 8B Instruct
+ollama pull llama3.1:8b
+
+# 설치 확인
+ollama list
+
+
+1-2) 로컬 API 단독 테스트 (OpenAI 호환)
+# Ollama의 OpenAI 호환 엔드포인트는 기본 http://localhost:11434/v1
+curl http://localhost:11434/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama3.1:8b",
+    "messages": [
+      {"role":"system","content":"한국어로 간결하고 단계적으로 답해줘."},
+      {"role":"user","content":"보이스피싱이 의심될 때 첫 단계는?"}
+    ],
+    "temperature": 0.2
+  }'
+
+
+→ JSON이 오면 로컬 Llama 준비 완료.
+
+2-1) Ollama준비(호스트)
+
+# 터미널 1
+ollama serve
+
+# 터미널 2
+ollama pull qwen2:7b-instruct
+ollama pull llama3.1:8b
+curl http://localhost:11434/api/tags
+
+2-2) 백엔드 .env 생성
+# 경로
+/Users/mino/Desktop/Final/VoiceBackend/voiceguard_backend_chat_patch/.env
+
+# 내용
+ALLOWED_ORIGINS=http://localhost:3000
+WS_ALLOWED_ORIGINS=http://localhost:3000
+API_TOKEN=devtoken
+
+OPENAI_BASE_URL=http://host.docker.internal:11434
+OPENAI_API_KEY=ollama
+
+PRIMARY_MODEL=qwen2:7b-instruct
+SECONDARY_MODEL=llama3.1:8b
+ROUTING=auto
+
+KB_PATH=./kb
+
+2-3) 백엔드 도커 실행
+# 터미널
+cd /Users/mino/Desktop/Final/VoiceBackend/voiceguard_backend_chat_patch
+docker compose up -d --build
+curl -sS http://localhost:8000/health
+
+2-4) API 사전 테스트(선택)
+# 터미널
+cat <<'JSON' | curl -sS -X POST http://localhost:8000/v1/chat -H "Content-Type: application/json" --data-binary @-
+{"query":"테스트 질문","history":[{"role":"user","content":"테스트"}],"use_rag":true,"token":"devtoken"}
+JSON
+
+2-5) 프론트 설정/실행
+# VoiceFront/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_WS_URL=ws://localhost:8000/v1/stream?token=devtoken
+NEXT_PUBLIC_API_TOKEN=devtoken
+
+# 실행
+cd /Users/mino/Desktop/Final/VoiceFront
+npm install
+npm run dev
+# 브라우저: http://localhost:3000 → 채팅 페이지에서 질문 전송
+
+# 문제 시 빠른 점검
+# 8000 충돌
+docker ps --filter publish=8000 -q | xargs -r docker stop
+# CORS처럼 보이는 500: 대부분 Ollama 미기동/모델 미준비 → 1) 재확인
+# JSON 오류: 파이프/파일 방식으로 전달
+# manifest 404: 무시 가능. 없애려면 VoiceFront/public/manifest.json 추가.

@@ -1,0 +1,73 @@
+VoiceGuard Chat Backend - JSON API Quick Guide
+
+1) Endpoint
+- URL: http://localhost:8000/v1/chat
+- Method: POST
+- Headers: Content-Type: application/json
+
+2) Request JSON
+{
+  "query": "안전계좌로 이체하라는데요?",
+  "history": [
+    { "role": "user", "content": "이전에 이런 전화 받았어요" }
+  ],
+  "use_rag": true,
+  "top_k": 4,
+  "token": "devtoken"
+}
+
+Notes
+- token: 백엔드 .env의 API_TOKEN과 동일해야 함
+- history: 생략 가능 ([] 기본)
+- use_rag, top_k: 선택값
+
+3) Response JSON
+{
+  "answer": "문장...",
+  "sources": [ { "source": "파일명.md", "doc_id": 1, "chunk_id": 3 } ]
+}
+
+4) Examples
+- curl
+curl -sS -X POST http://localhost:8000/v1/chat \
+  -H "Content-Type: application/json" \
+  --data-binary '{"query":"안전계좌로 이체하라는데요?","use_rag":true,"token":"devtoken"}'
+
+- Node.js (fetch)
+const res = await fetch('http://localhost:8000/v1/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    query: '안전계좌로 이체하라는데요?',
+    history: [],
+    use_rag: true,
+    token: 'devtoken'
+  })
+});
+const data = await res.json();
+
+- Node.js (axios)
+import axios from 'axios';
+const { data } = await axios.post('http://localhost:8000/v1/chat', {
+  query: '안전계좌로 이체하라는데요?',
+  use_rag: true,
+  token: 'devtoken'
+}, { headers: { 'Content-Type': 'application/json' } });
+
+- Python (requests)
+import requests
+payload = {"query":"안전계좌로 이체하라는데요?","use_rag": true, "token":"devtoken"}
+r = requests.post('http://localhost:8000/v1/chat', json=payload, timeout=60)
+print(r.json())
+
+5) CORS / Integration
+- 브라우저에서 직접 호출: 백엔드 .env 의 ALLOWED_ORIGINS 에 프론트 주소 추가 필요 (예: http://localhost:3000)
+- 서버→서버 통신: CORS 무관, 위 JSON POST 그대로 사용
+
+6) Common Errors
+- 401 Unauthorized: token 불일치 (API_TOKEN 확인)
+- 422 Unprocessable Entity: JSON 형식/인코딩 오류 (Content-Type, 따옴표/인용 확인)
+- 500 Internal Server Error: Ollama 미기동/모델 미준비 (http://localhost:11434/api/tags 확인, 모델 pull)
+
+7) API Docs (자동 문서)
+- http://localhost:8000/docs

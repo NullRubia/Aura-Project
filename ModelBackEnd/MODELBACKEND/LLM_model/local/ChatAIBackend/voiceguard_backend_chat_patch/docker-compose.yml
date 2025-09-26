@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  backend:
+    build: .
+    image: voiceguard-backend-chat:dev
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      ALLOWED_ORIGINS: "http://localhost:3000"
+      WS_ALLOWED_ORIGINS: "http://localhost:3000"
+      API_TOKEN: "devtoken"
+

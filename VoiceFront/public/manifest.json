@@ -1,0 +1,11 @@
+{
+  "name": "Voice Guard",
+  "short_name": "VoiceGuard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    { "src": "/icons/icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

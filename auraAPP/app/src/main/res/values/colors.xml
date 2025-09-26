@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- 예시 색상 -->
+    <color name="primary_600">#2563EB</color> <!-- 파란색 계열 -->
+    <color name="primary_500">#3B82F6</color>
+    <color name="primary_700">#1D4ED8</color>
+</resources>
