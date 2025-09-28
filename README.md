@@ -12,7 +12,7 @@
 ### **전체 프로젝트 구조(각 세부내용은 각 폴더내의 README.md 확인)**
 
 - 프론트엔드(voiceFront 폴더)
-  - React와 Next.js로 구성
+  - React(타입스크립트)와 Next.js로 구성
 - 웹 백엔드(voiceBack 폴더)
   - SpringBoot로 구성
 - AI 백엔드(ModelBackEnd 폴더)
