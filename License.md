@@ -54,4 +54,4 @@ For more information, visit: https://huggingface.co/pyannote/embedding
 
 This project uses the Qwen2 7B model developed by Alibaba Cloud.
 The Qwen2 7B model is licensed under the APACHE 2.0 License.
-For more information and commercial use inquires, visit: https://huggingface.co/Qwen/Qwen27B
+For more information and commercial use inquires, visit: https://huggingface.co/Qwen/Qwen2-7B
