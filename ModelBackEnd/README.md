@@ -23,7 +23,7 @@
 
 ## **파일설명**
 
-### **Whisper2.ipynb**
+### **Whisper.ipynb**
 
 - Whisper encoder 부분을 수정하여 만든 변조탐지모델 학습용 코드(Whisper/base 사용)
 
